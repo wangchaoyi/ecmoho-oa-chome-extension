@@ -1,0 +1,23 @@
+{
+  "name": "OA",
+  "version": "1.0",
+  "description": "Build an Extension!",
+  "manifest_version": 2,
+  "options_page": "build/app/index.html",
+  "permissions": [
+    "tabs",
+    "contextMenus",
+    "*://e.xinrenxinshi.com/*"
+  ],
+  "browser_action": {
+    "default_title": "OA",
+    "default_icon": "build/app/icon.png",
+    "default_popup": "build/app/index.html"
+  },
+  "background": {
+    "page": "build/extension/main.html"
+  },
+  "externally_connectable": {
+    "matches": ["*://e.xinrenxinshi.com/*"]
+  }
+}

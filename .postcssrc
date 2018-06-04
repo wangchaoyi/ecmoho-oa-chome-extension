@@ -1,0 +1,9 @@
+{
+  "modules": true,
+  "plugins": {
+    "autoprefixer": {
+      "grid": true
+    },
+    "postcss-px2rem": {remUnit: 100}
+  }
+}

@@ -1,0 +1,6 @@
+.idea/
+.cache/
+build/
+node_modules/
+src/app/data.json
+yarn-error.log
