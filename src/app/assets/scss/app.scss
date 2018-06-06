@@ -1,0 +1,23 @@
+//.btnGo {
+////  position: fixed !important;
+////  right: 25px;
+////  bottom: 25px;
+////}
+
+:global {
+  html,
+  body,
+  #app,
+  .main-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+
+  .text-center {
+    text-align: center !important;
+  }
+
+  .pull-right {
+    float: right;
+  }
+}

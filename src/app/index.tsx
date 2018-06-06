@@ -2,7 +2,11 @@
 
 import * as React from "react";
 import * as ReactDom from "react-dom";
-import App from "./app";
+import App from "./views/app";
+import "ant-design-pro/dist/ant-design-pro.min.css";
+import "antd/dist/antd.min.css";
+import "./assets/scss/app.scss";
+
 
 ReactDom.render(<App />, document.getElementById("app"));
 

@@ -13,6 +13,13 @@ class App {
         });
       }
     });
+
+    let btn = document.createElement("button");
+    btn.classList.add("hello-extension");
+    document.body.appendChild(btn);
+    btn.onclick = event => {
+      console.warn("I'm ready");
+    };
   }
 
   getCheckIn(time: number = 201805): Promise<IResponse<IDataCheckIn>> {

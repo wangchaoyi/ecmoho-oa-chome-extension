@@ -1,49 +1,146 @@
+const webpack = require("webpack");
+const HappyPack = require("happypack");
 const path = require("path");
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 module.exports = {
-
   mode: "development",
 
   entry: {
-    app: "./src/app/js/index.tsx"
+    app: "./src/app/index.tsx",
+    debug: "./src/app/debug.ts"
   },
 
   output: {
-    path: path.join(__dirname, './'),
-    filename: '[name].js'
+    path: path.join(__dirname, "/build/app"),
+    filename: "[name].js"
   },
 
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx']
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".scss", ".css"]
   },
 
   plugins: [
-    new TsconfigPathsPlugin({ configFile: "./src/app/tsconfig.json"  })
+    // 自定义tsconfig路径
+    new TsconfigPathsPlugin({ configFile: "./src/app/tsconfig.json" }),
+
+    // 开启新线程去进行类型检查
+    new ForkTsCheckerWebpackPlugin({
+      tsconfig: "./src/app/tsconfig.json",
+      checkSyntacticErrors: true,
+      async: true
+    }),
+
+    new HappyPack({
+      id: "tsx",
+      threads: 4,
+      loaders: [
+        {
+          path: "ts-loader",
+          query: { happyPackMode: true }
+        }
+      ],
+      cache: true
+    }),
+    new HappyPack({
+      id: "jsx",
+      threads: 4,
+      loaders: ["babel-loader"],
+      cache: true
+    }),
+    new HappyPack({
+      id: "scss",
+      threads: 1,
+      verbose: false,
+      loaders: [
+        "style-loader",
+        {
+          loader: "css-loader",
+          options: {
+            importLoaders: 1,
+            modules: true,
+            localIdentName: "[name]__[local]___[hash:base64:5]"
+          }
+        },
+        "sass-loader"
+      ],
+      cache: true
+    }),
+    new HappyPack({
+      id: "less",
+      threads: 1,
+      verbose: false,
+      loaders: [
+        "style-loader",
+        {
+          loader: "css-loader",
+          options: {
+            importLoaders: 1,
+            modules: true,
+            localIdentName: "[name]__[local]___[hash:base64:5]"
+          }
+        },
+        {
+          loader: "less-loader",
+          options: {
+            javascriptEnabled: true
+          }
+        }
+      ],
+      cache: true
+    }),
   ],
+
+  optimization: {
+    splitChunks: {
+      chunks: "async",
+      // minSize: 30000,
+      // minChunks: 1,
+      // maxAsyncRequests: 5,
+      // maxInitialRequests: 3,
+      name: true,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "all"
+        }
+      }
+    }
+  },
 
   module: {
     rules: [
       {
         test: /\.js|jsx$/,
-        use: ['babel-loader'],
+        use: ["happypack/loader?id=jsx"],
         exclude: /node_modules/
       },
       {
-        test: /\.json$/,
-        loader: 'json'
+        test: /\.data\.json$/,
+        use: ["json-loader"],
+        type: "javascript/auto"
       },
       {
         test: /\.ts|tsx?$/,
-        use: ['ts-loader']
+        use: ["happypack/loader?id=tsx"]
       },
       {
-        test: /\.scss|css$/,
-        use: ["style-loader", "css-loader", "sass-loader"]
+        test: /\.scss$/,
+        use: ["happypack/loader?id=scss"]
+      },
+      {
+        test: /\.less$/,
+        use: ["happypack/loader?id=less"]
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
       },
       {
         test: /\.html$/,
-        use: ['html-loader']
+        use: ["html-loader"]
       },
       {
         test: /\.(png|jpg|jpeg|svg)$/,
@@ -52,5 +149,5 @@ module.exports = {
     ]
   },
   watch: true,
-  devtool: 'source-map'
+  devtool: "source-map"
 };

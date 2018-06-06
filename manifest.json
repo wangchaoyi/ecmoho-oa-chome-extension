@@ -6,6 +6,7 @@
   "options_page": "build/app/index.html",
   "permissions": [
     "tabs",
+    "cookies",
     "contextMenus",
     "*://e.xinrenxinshi.com/*"
   ],

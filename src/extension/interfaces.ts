@@ -10,4 +10,3 @@ export interface IDataCheckIn {
   attendance_statistics: any;
   records: any[];
 }
-
