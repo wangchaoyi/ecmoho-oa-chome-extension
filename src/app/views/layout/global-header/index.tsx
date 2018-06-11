@@ -7,7 +7,7 @@ import { inject, observer } from "mobx-react";
 import moment from "moment";
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { UserStore } from "../../../store";
+import { User } from "../../../store";
 import styles from "./style.less";
 import NoticeIcon from "ant-design-pro/lib/NoticeIcon";
 
@@ -24,7 +24,7 @@ interface IGlobalHeaderProp {
   onMenuClick?: any;
   onNoticeClear?: any;
 
-  userStore?: UserStore;
+  userStore?: User;
 }
 
 @inject("userStore")
@@ -114,13 +114,13 @@ export default class GlobalHeader extends React.Component<
     const addMenu = (
       <Menu className={styles.menu}>
         <Menu.Item>
-          <Link to={"/member/customer/add"}>
-            <Icon type="user" />新增客户
+          <Link to={"/approve/add/overtime"}>
+            <Icon type="user" />申请加班
           </Link>
         </Menu.Item>
         <Menu.Item>
-          <Link to={"/member/contact/add"}>
-            <Icon type="user" />新增联系人
+          <Link to={"/member/customer/add"}>
+            <Icon type="user" /> 请假
           </Link>
         </Menu.Item>
       </Menu>
@@ -135,51 +135,48 @@ export default class GlobalHeader extends React.Component<
       <div className={styles.header}>
         <div className={styles.left}>
           <Link className={styles.logo} to={"/"}>
-            薪人薪事
+            {/*薪人薪事*/}
           </Link>
           {/*<img src={logo} alt="logo" width="32"/>*/}
           &nbsp;&nbsp;&nbsp;
-          <div className={styles.item}>
-            <HeaderSearch
-              {...headerSearchProps}
-              placeholder="站内搜索"
-              onPressEnter={this.handleSearch}
-              // dataSource={['搜索提示一', '搜索提示二', '搜索提示三']}
-              // onSearch={value => {
-              //   console.log('input', value); // eslint-disable-line
-              // }}
-              // onPressEnter={value => {
-              //   console.log('enter', value); // eslint-disable-line
-              // }}
-            />
-          </div>
-          <Dropdown overlay={addMenu}>
-            <Button className={styles.item} shape={"circle"} size={"small"}>
-              <Icon type={"plus"} />
-            </Button>
-          </Dropdown>
         </div>
 
         <div className={styles.right}>
-          <a target="_blank" className={styles.action}>
-            项目
-          </a>
-          <Link className={styles.action} to="/member">
-            客户
+          <HeaderSearch
+            {...headerSearchProps}
+            placeholder="站内搜索"
+            onPressEnter={this.handleSearch}
+            // dataSource={['搜索提示一', '搜索提示二', '搜索提示三']}
+            // onSearch={value => {
+            //   console.log('input', value); // eslint-disable-line
+            // }}
+            // onPressEnter={value => {
+            //   console.log('enter', value); // eslint-disable-line
+            // }}
+          />
+          <Dropdown overlay={addMenu}>
+            <a className={styles.action}>
+              <Button shape={"circle"} size={"small"}>
+                <Icon type={"plus"} />
+              </Button>
+            </a>
+          </Dropdown>
+
+          <Link className={styles.action} to="/">
+            首页
           </Link>
-          <a target="_blank" className={styles.action}>
-            日历
-          </a>
-          <a target="_blank" className={styles.action}>
-            回收站
-          </a>
+          
+          <Link className={styles.action} to="/approve">
+            审批列表
+          </Link>
+
           <a target="_blank" className={styles.action}>
             帮助
           </a>
 
           <NoticeIcon
             className={styles.action}
-            count={20}
+            count={0}
             onItemClick={(item: any, tabProps: any) => {
               console.log(item, tabProps); // eslint-disable-line
             }}

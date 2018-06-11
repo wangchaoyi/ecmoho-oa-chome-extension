@@ -3,7 +3,7 @@
  * @param dateTime 日期字符串 eg: "2015/05/01"
  * @returns {number}
  */
-import { IWeek } from "../interface";
+import { IOvertime, IWeek } from "../types/interface";
 import { Moment } from "moment";
 import moment = require("moment");
 
@@ -44,6 +44,8 @@ export function calcWeek(dateTime: string) {
   return getWeek(list[0], list[1], list[2]);
 }
 
+
+
 /**
  * 数字星期转中文
  * 范围： 0 - 6
@@ -77,13 +79,19 @@ export function calcOverTime(params: {
   isWeekDay: boolean;
   signInAt: Moment;
   signOutAt: Moment;
-}): number {
+}): IOvertime | null {
   const { isWeekDay, signInAt, signOutAt } = params;
 
-  // 格式化小时。
-  // 小数不满0.5小时的一律取消掉，大于8小时只按照8小时算。
-  // 如果总数小于0.5，则返回-1
-  const formatHour = (hour: number): number => {
+  if (isWeekDay && signOutAt.hour() < 20) {
+    return null;
+  }
+
+  /**
+   *   格式化小时。
+   *   小数不满0.5小时的一律取消掉，大于8小时只按照8小时算。
+   *   如果总数小于0.5，则返回-1
+   */
+  const formatHour = (hour: number): number | null => {
     let _temp = hour.toString().match(/(\d+)\.(\d)/);
     if (_temp) {
       let num = parseInt(_temp[1]);
@@ -95,20 +103,55 @@ export function calcOverTime(params: {
       }
       let time = num + float / 10;
       if (time === 0) {
-        return -1;
+        return null;
       }
       return time > 8 ? 8 : time;
     } else {
-      return -1;
+      return null;
     }
+  };
+
+  /**
+   * 格式化分钟数
+   * 备注： 薪人薪事那边默认分钟是以个数为5或者0来提交的
+   * @param {number} min
+   * @returns {number}
+   */
+  const formatMin = (min: number): number => {
+    let [min_left, min_right] = (min / 10)
+      .toFixed(1)
+      .split(".")
+      .map(e => parseInt(e));
+    if (min_right >= 0 && min_right < 5) {
+      min_right = 0;
+    } else {
+      min_right = 5;
+    }
+    return min_left*10 + min_right;
+  };
+
+  const calcTimeRange = (): { startTime: Moment; endTime: Moment } => {
+    const { isWeekDay, signInAt, signOutAt } = params;
+    let startTime: Moment;
+    let endTime: Moment = signOutAt.clone().minute(signOutAt.minute());
+    if (isWeekDay) {
+      startTime = signInAt
+        .clone()
+        .hour(20)
+        .minute(0)
+        .second(0);
+    } else {
+      startTime = signInAt.clone();
+    }
+    endTime.minute(formatMin(endTime.minute()));
+    return { startTime, endTime };
   };
 
   let overTime: number;
   if (isWeekDay) {
     if (signOutAt.hour() < 20) {
-      return -1;
+      return null;
     }
-
     let startTime = moment(`${signInAt.format("YYYY-MM-DD")} 20:00:00`);
     overTime = (signOutAt.valueOf() - startTime.valueOf()) / (3600 * 1000);
   } else {
@@ -118,7 +161,14 @@ export function calcOverTime(params: {
     }
   }
 
-  return formatHour(overTime);
+  let hour = formatHour(overTime);
+  if(hour === null){
+    return null;
+  }
+  return {
+    hour,
+    ...calcTimeRange()
+  };
 }
 
 /**
@@ -129,15 +179,15 @@ export function calcOverTime(params: {
  */
 export function calcHasFoodSubsidy(params: {
   isWorkDay: boolean;
-  overTime: number | undefined;
+  overTime: IOvertime | null;
 }) {
   const { isWorkDay, overTime } = params;
-  if (overTime === undefined) {
+  if (!overTime) {
     return false;
   }
   if (isWorkDay) {
-    return overTime >= 1;
+    return overTime.hour >= 1;
   } else {
-    return overTime >= 4;
+    return overTime.hour >= 4;
   }
 }

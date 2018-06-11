@@ -7,7 +7,6 @@ import "ant-design-pro/dist/ant-design-pro.min.css";
 import "antd/dist/antd.min.css";
 import "./assets/scss/app.scss";
 
-
 ReactDom.render(<App />, document.getElementById("app"));
 
 // Hot Module Replacement

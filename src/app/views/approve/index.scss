@@ -1,0 +1,28 @@
+.main {
+  padding-top: 25px;
+}
+
+.card {
+  margin-bottom: 16px !important;
+
+  :global {
+    .ant-card-body {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .info {
+    flex: 2;
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  .status {
+    flex: 1;
+
+    text-align: right;
+  }
+}

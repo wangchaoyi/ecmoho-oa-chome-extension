@@ -5,6 +5,7 @@ import { history } from "../router";
 import * as stores from "../store";
 
 import MyCheckIn from "./my-check-in";
+import Layout from "./layout/layout";
 import Login from "./user/login";
 
 export default class App extends React.Component {
@@ -14,9 +15,8 @@ export default class App extends React.Component {
         <Provider {...stores}>
           <div className="main-wrapper">
             <Switch>
-              <Route path={MyCheckIn.path} component={MyCheckIn} />
               <Route path={Login.path} component={Login} />
-              <Redirect to={MyCheckIn.path} />
+              <Route path="/" component={Layout} />
             </Switch>
           </div>
         </Provider>
