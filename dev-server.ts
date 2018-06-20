@@ -13,8 +13,16 @@ const Watch = require("glob-watcher");
 const server = require("http").createServer();
 const io = require("socket.io")(server);
 
+if(!fs.existsSync("build")){
+  fs.mkdirSync("build");
+  fs.mkdirSync("build/app");
+  fs.mkdirSync("build/extension");
+}
+
 // 同步src/app/index.html到build/app
 fs.copyFileSync("src/app/index.html", "build/app/index.html");
+
+fs.copyFileSync("src/extension/main.html", "build/extension/main.html");
 
 // 启动webpack打包app
 let sp = spawn("node", ["./node_modules/.bin/webpack", "--color" , "--config", "webpack.config.js"]);

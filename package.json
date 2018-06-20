@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "npm run dev-extension && npm run dev-app",
-    "debug": "ts-node dev-server.ts",
+    "dev": "yarn && yarn debug",
+    "debug": "yarn && ts-node dev-server.ts",
     "dev-app": "parcel src/app/index.html",
     "dev-extension": "webpack --config webpack.extension.config.js",
     "build-app": "parcel build src/app/index.html --out-dir build/app --public-url /build/app",
@@ -16,6 +16,7 @@
     "@types/react-router-dom": "^4.2.7",
     "@types/socket.io": "^1.4.34",
     "axios": "^0.18.0",
+    "babel-plugin-lodash": "^3.3.4",
     "dayjs": "^1.6.5",
     "fork-ts-checker-webpack-plugin": "^0.4.2",
     "happypack": "^5.0.0",

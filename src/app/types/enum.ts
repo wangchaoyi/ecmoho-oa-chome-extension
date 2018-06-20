@@ -1,5 +1,6 @@
 export enum FLOW_TYPE {
-  OVERTIME = 9
+  NOT_WORK = 4,
+  OVERTIME = 9,
 }
 
 export enum APPROVE_STATUS {
@@ -16,5 +17,10 @@ export enum APPROVE_STATUS {
   /**
    * 审批中
    */
-  WAIT = 0
+  WAIT = 0,
+
+  /**
+   * 申请驳回
+   */
+  REJECT = 2
 }

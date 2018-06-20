@@ -1,3 +1,6 @@
 {
-  "presets": []
+  "presets": [],
+  "plugins": [
+    "lodash"
+  ]
 }

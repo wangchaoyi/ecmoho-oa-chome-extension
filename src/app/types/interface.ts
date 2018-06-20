@@ -17,8 +17,8 @@ export interface ICheckInRecord {
    * 是否为工作日
    */
   isWorkDay: boolean;
-  signInAt: number | null; // 13位时间戳
-  signOutAt: number | null;
+  signInAt: Moment | null; // 13位时间戳
+  signOutAt: Moment | null;
   status: any;
 
   /**
@@ -70,7 +70,7 @@ export interface IApprove {
   /**
    * 加班类型
    */
-  flowType: number;
+  flowType: FLOW_TYPE;
   flowTypeDesc: string;
 
   /**

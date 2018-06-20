@@ -41,6 +41,11 @@ export class ApproveStore {
     return this.data.filter(e => e.status === APPROVE_STATUS.REVERSE);
   }
 
+  @computed
+  public get reject(){
+    return this.data.filter(e => e.status === APPROVE_STATUS.REJECT)
+  }
+
   public refresh() {
     this.initData();
   }
@@ -60,7 +65,7 @@ export class ApproveStore {
    * 判断是否填写过申请
    */
   public hasApprove(date: Moment): boolean{
-    return this.done.some(e => {
+    return this.data.some(e => {
       return moment(parseInt(e.meta.start_date)*1000).format("YYYY-MM-DD") === date.format("YYYY-MM-DD")
     })
   }

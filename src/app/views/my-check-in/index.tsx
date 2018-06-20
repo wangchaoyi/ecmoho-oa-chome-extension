@@ -1,8 +1,21 @@
 /// <reference path="../../types.ts" />
 
 import * as React from "react";
-import { Col, Divider, Table, DatePicker, Row, Form, Tag, Tooltip } from "antd";
+import {
+  Col,
+  Divider,
+  Table,
+  DatePicker,
+  Row,
+  Form,
+  Tag,
+  Tooltip,
+  Switch,
+  Radio,
+  Calendar, Badge
+} from "antd";
 import styles from "../../assets/scss/app.scss";
+import {findIndex} from "lodash";
 import { default as moment, Moment } from "moment";
 import {
   calcHasFoodSubsidy,
@@ -16,11 +29,13 @@ import GlobalHeader from "../layout/global-header";
 import { AddApproveStore, addApproveStore, approveStore } from "../../store";
 import { FLOW_TYPE } from "../../types/enum";
 import { history } from "../../router";
+import { RadioChangeEvent } from "antd/es/radio";
+import { CalendarMode } from "antd/es/calendar";
 
 const { MonthPicker } = DatePicker;
 const FormItem = Form.Item;
-
-console.log(approveStore);
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 const columns = [
   {
@@ -98,20 +113,20 @@ const columns = [
     title: "签到",
     key: "signInAt",
     render(data: ICheckInRecord) {
-      if (data.signInAt === 0) {
+      if (data.signInAt && data.signInAt.valueOf() === 0) {
         return <>-</>;
       }
-      return <>{moment(data.signInAt as number).format("hh:mm")}</>;
+      return <>{data.signInAt && data.signInAt.format("hh:mm")}</>;
     }
   },
   {
     title: "签退",
     key: "signOutAt",
     render(data: ICheckInRecord) {
-      if (data.signOutAt === 0) {
+      if (data.signOutAt && data.signOutAt.valueOf() === 0) {
         return <>-</>;
       }
-      return <>{moment(data.signOutAt as number).format("HH:mm")}</>;
+      return <>{data.signOutAt && data.signOutAt.format("HH:mm")}</>;
     }
   },
   {
@@ -125,10 +140,10 @@ const columns = [
       }
     ],
     onFilter: (value: string, record: ICheckInRecord) => {
-      if(!record.overtime) return false;
-      if(record.isWorkDay){
+      if (!record.overtime) return false;
+      if (record.isWorkDay) {
         return String(record.overtime.hour >= 1) === value;
-      }else{
+      } else {
         return String(record.overtime.hour >= 4) === value;
       }
     },
@@ -151,7 +166,7 @@ const columns = [
     render(data: ICheckInRecord) {
       if (data.overtime) {
         return <span>{data.overtime.hour}</span>;
-      } else if (data.signInAt === 0) {
+      } else if (data.signInAt && data.signInAt.valueOf() === 0) {
         return <>-</>;
       } else {
         return <>-</>;
@@ -194,7 +209,7 @@ const columns = [
       }
 
       const go = () => {
-        if(!data.overtime){
+        if (!data.overtime) {
           return;
         }
         addApproveStore.set({
@@ -222,10 +237,16 @@ const columns = [
   }
 ];
 
+enum DISPLAY {
+  CALC,
+  TABLE
+}
+
 interface IMyCheckInState {
   data: ICheckInRecord[];
   loading: boolean;
   date: Moment;
+  display: DISPLAY;
 }
 
 export default class App extends React.Component<any, IMyCheckInState> {
@@ -234,12 +255,14 @@ export default class App extends React.Component<any, IMyCheckInState> {
   state = {
     data: [],
     loading: false,
-    date: moment().month(4)
+    date: moment(),
+    display: DISPLAY.CALC
   };
 
   componentDidMount() {
     this.initData();
   }
+
 
   initData() {
     this.setState({
@@ -249,71 +272,160 @@ export default class App extends React.Component<any, IMyCheckInState> {
       this.setState({
         loading: false,
         data: convertData(res)
+      }, () => {
+        console.log(this.state);
       });
     });
   }
 
+  handleDisplayChange = (e: RadioChangeEvent) => {
+    this.setState({
+      display: e.target.value
+    });
+  };
+
+  handlePanelChange = (
+    date: moment.Moment | undefined,
+    mode?: CalendarMode
+  ) => {};
+
+  handleRenderDate = (date: Moment) => {
+    let index = findIndex(this.state.data, {
+      date: date.format("YYYY-MM-DD")
+    } as any);
+    if(index !== -1){
+      let data: ICheckInRecord = this.state.data[index];
+      if (data.signInAt && data.signInAt.valueOf() === 0 && data.signOutAt && data.signOutAt.valueOf() === 0) {
+        return null;
+      }
+
+      let overtimeApplyStatus = "待申请";
+      if (data.overtime && approveStore.hasApprove(data.overtime.startTime)) {
+        overtimeApplyStatus = "已申请";
+      }
+
+      const go = () => {
+        if (!data.overtime) {
+          return;
+        }
+        addApproveStore.set({
+          start_date: data.overtime.startTime.format(),
+          end_date: data.overtime.endTime.format(),
+          flow_type: FLOW_TYPE.OVERTIME,
+          overtime_hour: (data.overtime && data.overtime.hour) || 0,
+          reason: "",
+          custom_field: "[]",
+          overtime_compensation_rule: 1
+        });
+        history.push("/approve/add/overtime");
+      };
+
+      return <ul>
+        <li>
+          <Badge status="default" text={`${data.signInAt && data.signInAt.format("HH:mm")}-${data.signOutAt && data.signOutAt.format("HH:mm")}`} />
+        </li>
+        {
+          data.overtime && (
+            <>
+              <li>
+                <Badge status="default" text={`加班：${data.overtime.hour}小时`} />
+              </li>
+              <li>
+                <Badge status={overtimeApplyStatus === "待申请" ? "processing" : "success"} text={`状态：${overtimeApplyStatus}`} />
+              </li>
+            </>
+          )
+        }
+      </ul>
+    }
+    return null;
+  };
+
   render() {
+
+    const totalRow = (currentPageData: Object[]) => {
+      let data: ICheckInRecord[] = currentPageData as ICheckInRecord[];
+      let totalOvertime = 0;
+      let overtimeDays = 0;
+      let foodSubsidyDay = 0;
+
+      data.forEach(e => {
+        if (e.overtime !== null) {
+          totalOvertime += e.overtime.hour;
+          overtimeDays++;
+        }
+        if (e.hasFoodSubsidy) {
+          foodSubsidyDay++;
+        }
+      });
+
+      return (
+        <>
+          <>加班共计 {totalOvertime} 小时;</>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <>餐补共计 {foodSubsidyDay * 20} 元</>
+        </>
+      );
+    };
+
     return (
       <Row>
-        <Col span={18} push={3}>
+        <Col span={24} push={0}>
           <br />
           <h1>考勤记录</h1>
-          <Form layout="inline">
-            <FormItem label="考勤月份">
-              <MonthPicker
-                defaultValue={this.state.date}
-                onChange={(date: Moment) => {
-                  this.setState(
-                    {
-                      date
-                    },
-                    () => {
-                      this.initData();
-                    }
-                  );
-                }}
-                format={"YYYYMM"}
-              />
-            </FormItem>
-          </Form>
+          <Row>
+            <Col span={12}>
+              <Form layout="inline">
+                <FormItem label="考勤月份">
+                  <MonthPicker
+                    defaultValue={this.state.date}
+                    onChange={(date: Moment) => {
+                      this.setState(
+                        {
+                          date
+                        },
+                        () => {
+                          this.initData();
+                        }
+                      );
+                    }}
+                    format={"YYYYMM"}
+                  />
+                </FormItem>
+              </Form>
+            </Col>
+            <Col span={12}>
+              <div className="pull-right">
+                显示方式：{" "}
+                <RadioGroup
+                  onChange={this.handleDisplayChange}
+                  defaultValue={DISPLAY.CALC}
+                >
+                  <RadioButton value={DISPLAY.TABLE}>表格</RadioButton>
+                  <RadioButton value={DISPLAY.CALC}>日历</RadioButton>
+                </RadioGroup>
+              </div>
+            </Col>
+          </Row>
+
           <br />
-          <Table
-            loading={this.state.loading}
-            columns={columns}
-            dataSource={this.state.data}
-            rowKey="date"
-            pagination={false}
-            scroll={{ y: 400 }}
-            footer={(currentPageData: Object[]) => {
-              let data: ICheckInRecord[] = currentPageData as ICheckInRecord[];
-              let totalOvertime = 0;
-              let overtimeDays = 0;
-              let foodSubsidyDay = 0;
+          {this.state.display === DISPLAY.TABLE ? (
+            <Table
+              loading={this.state.loading}
+              columns={columns}
+              dataSource={this.state.data}
+              rowKey="date"
+              pagination={false}
+              scroll={{ y: 400 }}
+              footer={totalRow}
+            />
+          ) : (
+            <>
+              <Calendar onPanelChange={this.handlePanelChange} dateCellRender={this.handleRenderDate}/>
+              {totalRow(this.state.data)}
+            </>
+            )}
 
-              data.forEach(e => {
-                if(e.overtime !== null){
-                  totalOvertime += e.overtime.hour;
-                  overtimeDays++;
-                }
-                if(e.hasFoodSubsidy){
-                  foodSubsidyDay++;
-                }
-              });
-
-              return (
-                <>
-                  <>
-                    加班共计 {totalOvertime} 小时;
-                  </>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <>
-                    餐补共计 {foodSubsidyDay*20} 元
-                  </>
-                </>
-              )
-            }}
-          />
         </Col>
       </Row>
     );
@@ -347,11 +459,11 @@ function convertData(originData: any): ICheckInRecord[] {
       signInAt:
         e.signTimeList &&
         e.signTimeList[0] &&
-        e.signTimeList[0].clockTime * 1000,
+        moment(e.signTimeList[0].clockTime * 1000),
       signOutAt:
         e.signTimeList &&
         e.signTimeList[1] &&
-        e.signTimeList[1].clockTime * 1000,
+        moment(e.signTimeList[1].clockTime * 1000),
       status: "",
       overtime: null
     };
