@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import * as services from "../../../services";
 import { history, redirectToOrigin } from "../../../router";
 import { valiators } from "../../../utils";
+import { approveStore } from "../../../store";
 
 const FormItem = Form.Item;
 
@@ -84,6 +85,7 @@ export class LoginForm extends React.Component<FormComponentProps, any> {
           })
           .then(res => {
             message.success(res.message);
+            approveStore.refresh();
             redirectToOrigin();
           })
           .catch(e => {

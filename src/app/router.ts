@@ -7,7 +7,7 @@ export const history = createHashHistory();
  * 未登录重定向到登录
  */
 export function redirectToLogin() {
-  if(history.location.pathname.includes("login")){
+  if (history.location.pathname.includes("login")) {
     return;
   }
   history.replace({

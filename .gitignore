@@ -4,3 +4,5 @@ build/
 node_modules/
 src/app/data.json
 yarn-error.log
+release.crx
+release.pem

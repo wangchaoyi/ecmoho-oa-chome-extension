@@ -2,6 +2,7 @@ import { configure } from "mobx";
 
 export { default as userStore, User } from "./modules/user";
 export { default as approveStore, ApproveStore } from "./modules/approve";
+export { default as checkInStore, CheckInStore } from "./modules/check-in";
 export {
   default as addApproveStore,
   AddApproveStore

@@ -1,0 +1,24 @@
+{
+  "name": "ecmoho-oa",
+  "version": "1.2",
+  "description": "Hello, XinrenXinshi; Hello, Fanwei",
+  "manifest_version": 2,
+  "options_page": "./app/index.html",
+  "permissions": [
+    "tabs",
+    "cookies",
+    "contextMenus",
+    "*://e.xinrenxinshi.com/*",
+    "*://oa.ecmoho.com/*"
+  ],
+  "browser_action": {
+    "default_title": "OA",
+    "default_icon": "./app/icon.png"
+  },
+  "background": {
+    "page": "./extension/main.html"
+  },
+  "externally_connectable": {
+    "matches": ["*://e.xinrenxinshi.com/*"]
+  }
+}

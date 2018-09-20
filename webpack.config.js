@@ -3,6 +3,7 @@ const HappyPack = require("happypack");
 const path = require("path");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   mode: "development",
@@ -22,6 +23,12 @@ module.exports = {
   },
 
   plugins: [
+
+    // 打包模块体积分析
+    // new BundleAnalyzerPlugin(),
+
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh-cn/),
+
     // 自定义tsconfig路径
     new TsconfigPathsPlugin({ configFile: "./src/app/tsconfig.json" }),
 
@@ -51,7 +58,7 @@ module.exports = {
     }),
     new HappyPack({
       id: "scss",
-      threads: 1,
+      threads: 4,
       verbose: false,
       loaders: [
         "style-loader",
@@ -69,7 +76,7 @@ module.exports = {
     }),
     new HappyPack({
       id: "less",
-      threads: 1,
+      threads: 4,
       verbose: false,
       loaders: [
         "style-loader",
@@ -98,11 +105,11 @@ module.exports = {
       // minSize: 30000,
       // minChunks: 1,
       // maxAsyncRequests: 5,
-      // maxInitialRequests: 3,
+      maxInitialRequests: 3,
       name: true,
       cacheGroups: {
         vendors: {
-          test: /[\\/]node_modules[\\/]/,
+          // test: /[\\/]node_modules[\\/]/,
           name: "vendor",
           chunks: "all"
         }

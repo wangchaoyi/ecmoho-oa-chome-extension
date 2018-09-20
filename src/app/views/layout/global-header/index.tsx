@@ -1,7 +1,7 @@
 import HeaderSearch from "ant-design-pro/lib/HeaderSearch";
 // import NoticeIcon from 'ant-design-pro/lib/NoticeIcon';
 import { Avatar, Button, Dropdown, Icon, Menu, message, Spin, Tag } from "antd";
-import { groupBy } from "lodash";
+import groupBy from "lodash/groupBy";
 import Debounce from "lodash-decorators/debounce";
 import { inject, observer } from "mobx-react";
 import moment from "moment";
@@ -118,11 +118,11 @@ export default class GlobalHeader extends React.Component<
             <Icon type="user" />申请加班
           </Link>
         </Menu.Item>
-        <Menu.Item>
-          <Link to={"/member/customer/add"}>
-            <Icon type="user" /> 请假
-          </Link>
-        </Menu.Item>
+        {/*<Menu.Item>*/}
+        {/*<Link to={"/member/customer/add"}>*/}
+        {/*<Icon type="user" /> 请假*/}
+        {/*</Link>*/}
+        {/*</Menu.Item>*/}
       </Menu>
     );
 
@@ -165,7 +165,7 @@ export default class GlobalHeader extends React.Component<
           <Link className={styles.action} to="/">
             首页
           </Link>
-          
+
           <Link className={styles.action} to="/approve">
             审批列表
           </Link>
@@ -223,7 +223,7 @@ export default class GlobalHeader extends React.Component<
             </Dropdown>
           )}
 
-          <Spin size="small" style={{ marginLeft: 8 }} />
+          {/*<Spin size="small" style={{ marginLeft: 8 }} />*/}
         </div>
       </div>
     );

@@ -13,19 +13,27 @@
     height: 100%;
   }
 
+  .container{
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .text-center {
     text-align: center !important;
+  }
+  .text-right {
+    text-align: right !important;
   }
 
   .pull-right {
     float: right;
   }
 
-  ul{
+  ul {
     padding-left: 8px;
-    li{
+    li {
       list-style: none;
     }
   }
-
 }

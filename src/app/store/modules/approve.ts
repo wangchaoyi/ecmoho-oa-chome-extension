@@ -8,7 +8,6 @@ import { default as moment, Moment } from "moment";
  * 审批列表
  */
 export class ApproveStore {
-
   @observable public data: IApprove[] = [];
 
   @observable
@@ -42,8 +41,8 @@ export class ApproveStore {
   }
 
   @computed
-  public get reject(){
-    return this.data.filter(e => e.status === APPROVE_STATUS.REJECT)
+  public get reject() {
+    return this.data.filter(e => e.status === APPROVE_STATUS.REJECT);
   }
 
   public refresh() {
@@ -64,12 +63,14 @@ export class ApproveStore {
   /**
    * 判断是否填写过申请
    */
-  public hasApprove(date: Moment): boolean{
+  public hasApprove(date: Moment): boolean {
     return this.data.some(e => {
-      return moment(parseInt(e.meta.start_date)*1000).format("YYYY-MM-DD") === date.format("YYYY-MM-DD")
-    })
+      return (
+        moment(parseInt(e.meta.start_date) * 1000).format("YYYY-MM-DD") ===
+        date.format("YYYY-MM-DD")
+      );
+    });
   }
-
 }
 
 export default new ApproveStore();

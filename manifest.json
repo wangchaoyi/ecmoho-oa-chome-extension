@@ -1,19 +1,19 @@
 {
-  "name": "OA",
-  "version": "1.0",
-  "description": "Build an Extension!",
+  "name": "ecmoho-oa",
+  "version": "1.2",
+  "description": "Hello, XinrenXinshi; Hello, Fanwei",
   "manifest_version": 2,
   "options_page": "build/app/index.html",
   "permissions": [
     "tabs",
     "cookies",
     "contextMenus",
-    "*://e.xinrenxinshi.com/*"
+    "*://e.xinrenxinshi.com/*",
+    "*://oa.ecmoho.com/*"
   ],
   "browser_action": {
     "default_title": "OA",
-    "default_icon": "build/app/icon.png",
-    "default_popup": "build/app/index.html"
+    "default_icon": "build/app/icon.png"
   },
   "background": {
     "page": "build/extension/main.html"

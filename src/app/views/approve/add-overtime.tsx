@@ -28,7 +28,7 @@ export default class AddOvertime extends React.Component {
   }
 }
 
-interface IForm extends FormComponentProps{
+interface IForm extends FormComponentProps {
   addApproveStore: AddApproveStore;
   approveStore: ApproveStore;
 }
@@ -65,7 +65,7 @@ class AddApproveForm extends React.Component<IForm, {}> {
           if (res.status) {
             message.success(res.message);
             approveStore.refresh();
-            history.push("/approve");
+            history.push("/my-check-in");
           } else {
             message.error(res.message);
           }
@@ -114,15 +114,15 @@ class AddApproveForm extends React.Component<IForm, {}> {
 
     this.props.form.setFieldsValue({
       dateTime: [
-        moment(data.start_date),
-        moment(data.end_date)
+        moment(data.start_date || Date.now()),
+        moment(data.end_date || Date.now())
       ],
       overtime_hour: data.overtime_hour,
       reason: data.reason
     });
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.props.addApproveStore.reset();
   }
 

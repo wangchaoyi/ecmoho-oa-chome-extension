@@ -32,7 +32,6 @@ export interface ICheckInRecord {
   hasFoodSubsidy?: boolean;
 }
 
-
 /**
  * 传送给服务器的分页参数
  */
@@ -618,4 +617,13 @@ export interface IApproveHistory {
   is_final: 1 | 0;
 
   employeeStatus: 0;
+}
+
+export interface IApplyFoodSubsidy {
+  date: number;
+  money: number;
+}
+export interface IApplyCarSubsidy {
+  date: number;
+  money: number;
 }

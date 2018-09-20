@@ -19,7 +19,7 @@ export class AddApproveStore {
     this.data = data;
   }
 
-  reset(){
+  reset() {
     this.data = {
       start_date: "",
       end_date: "",
@@ -30,7 +30,6 @@ export class AddApproveStore {
       overtime_compensation_rule: 1
     };
   }
-
 }
 
 export default new AddApproveStore();

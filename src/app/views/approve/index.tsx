@@ -22,8 +22,10 @@ interface IApproveState {
 
 @inject("approveStore")
 @observer
-export default class Index extends React.Component<IApproveProp,
-  IApproveState> {
+export default class Index extends React.Component<
+  IApproveProp,
+  IApproveState
+> {
   static path: string = "/approve";
 
   state = {
@@ -56,12 +58,19 @@ export default class Index extends React.Component<IApproveProp,
       return (
         <List.Item>
           <List.Item.Meta
-            title={<a onClick={() => {
-              this.setState({
-                detail: item,
-                dialogVisible: true
-              });
-            }} href="javascript:void(0)">{title}</a>}
+            title={
+              <a
+                onClick={() => {
+                  this.setState({
+                    detail: item,
+                    dialogVisible: true
+                  });
+                }}
+                href="javascript:void(0)"
+              >
+                {title}
+              </a>
+            }
             description={`申请时间：${moment(
               item.applicationTime * 1000
             ).format("YYYY-MM-DD HH:mm:ss")}`}
@@ -118,10 +127,14 @@ export default class Index extends React.Component<IApproveProp,
                   {detail.flowTypeDesc}
                 </FormItem>
                 <FormItem label="开始时间" {...formItemLayout}>
-                  {moment(parseInt(detail.meta.start_date + "000")).format("YYYY-MM-DD HH:mm:ss")}
+                  {moment(parseInt(detail.meta.start_date + "000")).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  )}
                 </FormItem>
                 <FormItem label="结束时间" {...formItemLayout}>
-                  {moment(parseInt(detail.meta.end_date + "000")).format("YYYY-MM-DD HH:mm:ss")}
+                  {moment(parseInt(detail.meta.end_date + "000")).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  )}
                 </FormItem>
                 <FormItem label="申请事由" {...formItemLayout}>
                   {detail.meta.reason}

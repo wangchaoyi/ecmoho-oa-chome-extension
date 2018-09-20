@@ -6,8 +6,16 @@ import App from "./views/app";
 import "ant-design-pro/dist/ant-design-pro.min.css";
 import "antd/dist/antd.min.css";
 import "./assets/scss/app.scss";
+import { LocaleProvider } from "antd";
+import zh_CN from "antd/lib/locale-provider/zh_CN";
+import "moment/locale/zh-cn";
 
-ReactDom.render(<App />, document.getElementById("app"));
+ReactDom.render(
+  <LocaleProvider locale={zh_CN}>
+    <App />
+  </LocaleProvider>,
+  document.getElementById("app")
+);
 
 // Hot Module Replacement
 const module1: any = module;

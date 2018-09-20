@@ -1,6 +1,16 @@
 {
-  "presets": [],
+  "presets": [
+    []
+  ],
   "plugins": [
-    "lodash"
+    "lodash",
+    [
+      "import",
+      {
+        "libraryName": "antd",
+        "libraryDirectory": "es",
+        "style": "css"
+      }
+    ]
   ]
 }
