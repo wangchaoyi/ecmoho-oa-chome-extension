@@ -1,7 +1,7 @@
-import { action, computed, observable, observe } from "mobx";
+import { action, computed, observable } from "mobx";
 import { IApprove } from "../../types/interface";
 import * as services from "../../services";
-import { APPROVE_STATUS } from "../../types/enum";
+import { APPROVE_STATUS, FLOW_TYPE } from "../../types/enum";
 import { default as moment, Moment } from "moment";
 
 /**
@@ -61,13 +61,17 @@ export class ApproveStore {
   }
 
   /**
-   * 判断是否填写过申请
+   * 判断是否填写过加班申请
    */
   public hasApprove(date: Moment): boolean {
     return this.data.some(e => {
+
       return (
+        e.flowType === FLOW_TYPE.OVERTIME &&
+        [APPROVE_STATUS.WAIT, APPROVE_STATUS.SUCCESS].indexOf(e.status) !==
+          -1 &&
         moment(parseInt(e.meta.start_date) * 1000).format("YYYY-MM-DD") ===
-        date.format("YYYY-MM-DD")
+          date.format("YYYY-MM-DD")
       );
     });
   }

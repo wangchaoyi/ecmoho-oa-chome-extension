@@ -15,8 +15,8 @@ export default function calcTimeRange(
       .minute(0)
       .second(0);
   } else {
-    startTime = signInAt.clone().minute(formatMin(signInAt.minute()));
+    startTime = signInAt.clone().minute(formatMin(signInAt.minute(), "start"));
   }
-  endTime.minute(formatMin(endTime.minute()));
+  endTime.minute(formatMin(endTime.minute(), "end"));
   return { startTime, endTime };
 }

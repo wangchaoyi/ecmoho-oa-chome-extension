@@ -4,10 +4,15 @@
  */
 import { DEBUG_SERVER_PORT } from "./config";
 
-const socketIO = require("socket.io-client");
-const socket = socketIO(`http://localhost:${DEBUG_SERVER_PORT}`);
-socket.on("connect", function() {});
-socket.on("refresh", function(data: any) {
-  location.reload();
-});
-socket.on("disconnect", function() {});
+
+if(process.env.NODE_ENV === "development"){
+
+  const socketIO = require("socket.io-client");
+  const socket = socketIO(`http://localhost:${DEBUG_SERVER_PORT}`);
+  socket.on("connect", function() {});
+  socket.on("refresh", function(data: any) {
+    location.reload();
+  });
+  socket.on("disconnect", function() {});
+
+}

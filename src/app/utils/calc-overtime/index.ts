@@ -22,10 +22,12 @@ export default function calcOverTime(params: {
 }): IOvertime | null {
   const { isWeekDay, signInAt, signOutAt } = params;
 
-  signInAt.minute(formatMin(signInAt.minute()));
-  signOutAt.minute(formatMin(signOutAt.minute()));
+  signInAt.minute(formatMin(signInAt.minute(), "start"));
+  signOutAt.minute(formatMin(signOutAt.minute(), "end"));
 
-  if (isWeekDay && signOutAt.hour() < 20) {
+  const calcOverTimeStart = signInAt.clone().hour(20).minutes(30);
+
+  if (isWeekDay && signOutAt < calcOverTimeStart) {
     return null;
   }
 
@@ -38,15 +40,18 @@ export default function calcOverTime(params: {
     overTime = (signOutAt.valueOf() - startTime.valueOf()) / (3600 * 1000);
   } else {
     overTime = (signOutAt.valueOf() - signInAt.valueOf()) / (3600 * 1000);
-    if (signInAt.hour() <= 12 && signOutAt.hour() >= 13) {
-      overTime--;
-    }
+    // 薪人薪事那边在周末不再减去一个小时，
+    // if (signInAt.hour() <= 12 && signOutAt.hour() >= 13) {
+    //   overTime--;
+    // }
   }
 
   let hour = formatHour(overTime);
-  if (hour === null) {
+  if (hour === null || hour < 0.5) {
     return null;
   }
+
+
   return {
     hour,
     ...calcTimeRange(isWeekDay, signInAt, signOutAt)

@@ -22,8 +22,6 @@ if(!fs.existsSync("build")){
 // 同步src/app/index.html到build/app
 fs.copyFileSync("src/app/index.html", "build/app/index.html");
 
-fs.copyFileSync("src/extension/main.html", "build/extension/main.html");
-
 // 启动webpack打包app
 let sp = spawn("node", ["./node_modules/.bin/webpack", "--color" , "--config", "webpack.config.js"]);
 sp.stdout.on("data", (data) => {

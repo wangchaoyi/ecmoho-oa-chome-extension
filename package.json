@@ -1,9 +1,6 @@
 {
   "scripts": {
-    "dev": "yarn && yarn debug",
-    "debug": "yarn && ts-node dev-server.ts",
-    "dev-app": "parcel src/app/index.html",
-    "dev-extension": "webpack --config webpack.extension.config.js",
+    "dev": "yarn && ts-node scripts/before-development && ts-node dev-server.ts",
     "format": "prettier --write 'src/**/*.+(js|jsx|ts|tsx|vue|css|scss)'",
     "build-production": "webpack --config webpack.config.js --mode production -w false",
     "release": "ts-node scripts/release",

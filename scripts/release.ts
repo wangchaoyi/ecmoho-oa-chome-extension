@@ -19,7 +19,7 @@ function main() {
   );
 
   copyDir("./build/app", path.join(releasePath, "app"));
-  copyDir("./build/extension", path.join(releasePath, "extension"));
+  // copyDir("./build/extension", path.join(releasePath, "extension"));
 
   fs.writeFileSync(
     path.join(releasePath, "manifest.json"),
