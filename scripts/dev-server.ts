@@ -8,7 +8,7 @@
 import * as fs from "fs";
 import {exec, spawn, execSync, spawnSync} from "child_process";
 import * as Events from "events";
-import { DEBUG_SERVER_PORT } from "./src/app/config";
+import { DEBUG_SERVER_PORT } from "../src/app/config/index";
 const Watch = require("glob-watcher");
 const server = require("http").createServer();
 const io = require("socket.io")(server);

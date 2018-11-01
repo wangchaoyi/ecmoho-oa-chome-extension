@@ -5,4 +5,5 @@ node_modules/
 src/app/data.json
 yarn-error.log
 release.crx
+release.zip
 release.pem

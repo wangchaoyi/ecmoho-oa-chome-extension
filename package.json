@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "yarn && ts-node scripts/before-development && ts-node dev-server.ts",
+    "dev": "yarn && ts-node scripts/before-development && ts-node scripts/dev-server.ts",
     "format": "prettier --write 'src/**/*.+(js|jsx|ts|tsx|vue|css|scss)'",
     "build-production": "webpack --config webpack.config.js --mode production -w false",
     "release": "ts-node scripts/release",
